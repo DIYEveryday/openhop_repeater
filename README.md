@@ -1,5 +1,36 @@
 # openHop Repeater
 
+> **Fork note: SX1276 support for the Dragino LoRa/GPS HAT**
+>
+> This fork adds the `sx1276` radio type and a **Dragino LoRa/GPS HAT (SX1276)**
+> board preset, so openHop can run on a Raspberry Pi fitted with the Dragino HAT
+> (SX1276 on PA_BOOST, NSS GPIO25, RESET GPIO17, DIO0 GPIO4, 20 dBm max).
+> Upstream openHop supports SX1262 radios only.
+>
+> The radio driver lives in the companion fork
+> [DIYEveryday/openhop_core](https://github.com/DIYEveryday/openhop_core/tree/sx1276-dragino)
+> (`openhop_core.hardware.sx1276_wrapper`). Both forks are needed: the PyPI
+> `openhop_core` release has no SX1276 driver.
+>
+> Tested on a Raspberry Pi Zero W + Dragino HAT v1.4 (869.618 MHz, SF8, BW 62.5 kHz):
+> receive, transmit, repeating, flood adverts and the LetsMesh observer all work.
+>
+> **Install** (after cloning both forks on the `sx1276-dragino` branch):
+>
+> ```bash
+> sudo apt install -y python3-pydantic   # avoids a multi-hour Rust build of pydantic-core on ARMv6
+> cd openhop_repeater && sudo bash manage.sh install
+> sudo /opt/openhop_repeater/venv/bin/pip install --no-deps --force-reinstall ../openhop_core
+> sudo systemctl restart openhop-repeater
+> ```
+>
+> Then pick **Dragino LoRa/GPS HAT (SX1276)** in the web setup wizard on port 8000.
+> Do not use the web/OTA upgrade: it reinstalls upstream `openhop_core` and
+> removes the driver. Re-run the `pip install` line above after any upgrade.
+>
+> The driver has been proposed upstream; see the pull requests on
+> [openhop-dev](https://github.com/openhop-dev).
+
 Lightweight Python MeshCore repeater daemon built on `openhop_core`.
 
 Formerly `pyMC_Repeater` built on `pyMC_core`.
